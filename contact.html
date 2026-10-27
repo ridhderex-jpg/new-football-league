@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — New Football League</title><meta name="description" content="Sponsorship, coaching and player careers, or any other question.">
+<meta property="og:title" content="Contact — New Football League">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏈</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="top"><div class="wrap"><a class="logo" href="index.html">NEW FOOTBALL LEAGUE</a><nav><a href="index.html">Home</a><a href="league.html">The league</a><a href="teams.html">Teams</a><a href="contact.html" aria-current="page">Contact</a></nav></div></header>
+<div class="pagehead"><div class="wrap"><h1>Contact</h1><p>Sponsorship, coaching and player careers, or any other question.</p></div></div>
+<section><div class="wrap">
+<p class="lead">Advertising and sponsorship rights are open. Send your inquiry and the Commissioner’s office will reply by email.</p>
+<form id="f"><label>I’m reaching out about<select name="type"><option value="sponsor">Sponsorship or advertising</option><option value="career">Coaching or player careers</option><option value="general">Something else</option></select></label>
+<label>Name<input name="name" required autocomplete="name"></label><label>Email<input name="email" type="email" required autocomplete="email"></label>
+<label>Message<textarea name="message" rows="5" required></textarea></label>
+<button class="btn" type="submit">Send inquiry</button><div id="msg" role="status"></div></form></div></section>
+<footer><div class="wrap">© 2026 New Football League. Operated by CH’S Service Provider, Inc., 965 31st Street, Erie, PA 16504 · 814-323-1057 · <a href="mailto:Commissioner@chsserviceprovider.com">Commissioner@chsserviceprovider.com</a></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+// ---- CONFIG: paste your Supabase values here (Project Settings → API) ----
+const SUPABASE_URL = "https://fowhaecpzmsqnordfvao.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_aQHQ0bD00ltQDi4IzD73pg_H-Fn5Y6G";
+const COMMISSIONER = "Commissioner@chsserviceprovider.com";
+
+// ---- Inquiry form → Supabase (falls back to email if not configured) ----
+const sb = SUPABASE_URL && window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+document.getElementById("f").addEventListener("submit", async e=>{
+  e.preventDefault();
+  const f=e.target, msg=document.getElementById("msg"), d=Object.fromEntries(new FormData(f));
+  if(!sb){
+    location.href=`mailto:${COMMISSIONER}?subject=${encodeURIComponent("League inquiry: "+d.type)}&body=${encodeURIComponent(d.message+"\n\n"+d.name+" ("+d.email+")")}`;
+    return;
+  }
+  msg.textContent="Sending…";
+  const {error}=await sb.from("inquiries").insert(d);
+  if(error){msg.textContent="Couldn’t send your inquiry. Email "+COMMISSIONER+" instead.";return}
+  f.reset();msg.textContent="Inquiry sent. The Commissioner’s office will reply by email.";
+});
+</script>
+</body></html>

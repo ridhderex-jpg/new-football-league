@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teams — New Football League</title><meta name="description" content="One team per state. Divisions are placeholders grouped by region.">
+<meta property="og:title" content="Teams — New Football League">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏈</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="top"><div class="wrap"><a class="logo" href="index.html">NEW FOOTBALL LEAGUE</a><nav><a href="index.html">Home</a><a href="league.html">The league</a><a href="teams.html" aria-current="page">Teams</a><a href="contact.html">Contact</a></nav></div></header>
+<div class="pagehead"><div class="wrap"><h1>Teams</h1><p>One team per state. Divisions are placeholders grouped by region.</p></div></div>
+<section><div class="wrap">
+<div class="tabs" role="group" aria-label="Filter by division"></div><ul id="teams"></ul></div></section>
+<footer><div class="wrap">© 2026 New Football League. Operated by CH’S Service Provider, Inc., 965 31st Street, Erie, PA 16504 · 814-323-1057 · <a href="mailto:Commissioner@chsserviceprovider.com">Commissioner@chsserviceprovider.com</a></div></footer>
+<script>
+// ---- Teams (edit freely; divisions are placeholders by U.S. region) ----
+const DIVISIONS = {
+  East:"Connecticut,Delaware,Maine,Maryland,Massachusetts,New Hampshire,New Jersey,New York,Pennsylvania,Rhode Island,Vermont,Virginia,West Virginia",
+  North:"Illinois,Indiana,Iowa,Kansas,Michigan,Minnesota,Missouri,Nebraska,North Dakota,Ohio,South Dakota,Wisconsin",
+  South:"Alabama,Arkansas,Florida,Georgia,Kentucky,Louisiana,Mississippi,North Carolina,Oklahoma,South Carolina,Tennessee,Texas",
+  West:"Alaska,Arizona,California,Colorado,Hawaii,Idaho,Montana,Nevada,New Mexico,Oregon,Utah,Washington,Wyoming"
+};
+const teams = Object.entries(DIVISIONS).flatMap(([d,s])=>s.split(",").map(n=>({n,d})));
+const list = document.getElementById("teams"), tabs = document.querySelector(".tabs");
+let cur = "All";
+function draw(){
+  list.innerHTML = teams.filter(t=>cur==="All"||t.d===cur).sort((a,b)=>a.n.localeCompare(b.n))
+    .map(t=>`<li>${t.n}<small>${t.d}</small></li>`).join("");
+  tabs.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.d===cur));
+}
+["All",...Object.keys(DIVISIONS)].forEach(d=>{
+  const b=document.createElement("button");b.textContent=d;b.dataset.d=d;b.onclick=()=>{cur=d;draw()};tabs.appendChild(b);
+});
+draw();
+</script>
+</body></html>
